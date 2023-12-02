@@ -3,8 +3,9 @@ import kotlin.math.max
 class Draw(val red: Int, val green: Int, val blue: Int) {
     companion object {
         fun parse(rgb: String): Draw {
-            val chunks =
-                rgb.split(",").map { piece -> piece.trim().split(" ", limit = 2) }.map { p -> Pair(p[1], p[0].toInt()) }
+            val chunks = rgb.split(",")
+                .map { piece -> piece.trim().split(" ", limit = 2) }
+                .map { p -> Pair(p[1], p[0].toInt()) }
             val red = chunks.find { c -> c.first == "red" }?.second ?: 0
             val green = chunks.find { c -> c.first == "green" }?.second ?: 0
             val blue = chunks.find { c -> c.first == "blue" }?.second ?: 0
@@ -23,7 +24,13 @@ class Game(val id: Int, private val draws: List<Draw>) {
         return impossibleDraw != null
     }
 
-    fun minCubes(): RGBCount = draws.fold(RGBCount(0,0,0)) { acc, draw -> RGBCount(max(acc.red, draw.red), max(acc.green, draw.green), max(acc.blue, draw.blue)) }
+    fun minCubes(): RGBCount = draws.fold(RGBCount(0, 0, 0)) { acc, draw ->
+        RGBCount(
+            max(acc.red, draw.red),
+            max(acc.green, draw.green),
+            max(acc.blue, draw.blue)
+        )
+    }
 
     fun minPower(): Int = power(minCubes())
 
@@ -33,7 +40,7 @@ class Game(val id: Int, private val draws: List<Draw>) {
 
         fun parse(line: String): Game {
             // Game 3: 8 green, 6 blue, 20 red; 5 blue, 4 red, 13 green; 5 green, 1 red
-            val (game, draws) = line.split(":")
+            val (game, draws) = line.split(":", limit = 2)
             val id = game.removePrefix("Game ").toInt()
 
             val drawsParsed = draws.split(";").map { d -> Draw.parse(d) }
